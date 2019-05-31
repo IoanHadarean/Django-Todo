@@ -32,3 +32,21 @@ class TestViews(TestCase):
         item = get_object_or_404(Item, pk=1)
         self.assertEqual(item.done, False)
         
+    def test_post_edit_an_item(self):
+        item = Item(name='Item')
+        item.save()
+        id = item.id
+        
+        response = self.client.post('/edit/{0}'.format(id), {'name': 'Edited Item'})
+        item = get_object_or_404(Item, pk=1)
+        
+        self.assertEqual("Edited Item", item.name)
+        
+    def test_toggle_status(self):
+        item = Item(name='Item')
+        item.save()
+        id = item.id
+        
+        response = self.client.post('/toggle/{0}'.format(id))
+        item = get_object_or_404(Item, pk=id)
+        self.assertEqual(item.done, True)
